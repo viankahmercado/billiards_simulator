@@ -40,6 +40,7 @@ powering_up = False
 
 # colors
 background = (50, 50, 50)
+RED = (255, 0, 0)
 
 # images path
 cue_image = pygame.image.load("images/cue.png").convert_alpha()
@@ -123,6 +124,10 @@ class Cue():
 
 cue = Cue(balls[-1].body.position)
 
+# power bar to indicate how powerful the cue ball will be hit 
+power_bar = pygame.Surface((10, 20))
+power_bar.fill(RED)
+
 # create game loop
 run = True
 while run:
@@ -163,7 +168,11 @@ if powering_up == True:
     force += 100 * force_direction
     if force >= max_force or force <= 0:
       force_direction *= -1
-    print(force)
+    #draw power bars
+    for b in range(math.ceil(force / 2000)):
+      screen.blit(power_bar,
+       (balls[-1].body.position[0] - 30 + (b * 15),
+        balls[-1].body.position[1] + 30))
 elif powering_up == False and taking_shot == True:
     x_impulse = math.cos(math.radians(cue_angle))
     y_impulse = math.sin(math.radians(cue_angle))

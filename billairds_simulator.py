@@ -35,6 +35,7 @@ diameter = 36
 background = (50, 50, 50)
 
 # images path
+cue_image = pygame.image.load("images/cue.png").convert_alpha()
 table_image = pygame.image.load("images/table.png").convert_alpha()
 ball_images = []
 for i in range(1, 17):
@@ -60,12 +61,13 @@ def create_ball(radius, pos):
 balls = []
 rows = 5
 # potting balls
-for column in range(5):
+for col in range(5):
   for row in range(rows):
-    position = (250 + (column * (diameter + 1)), 267 + (row *(diameter + 1)) + (column * diameter / 2))
-    new_ball = create_ball(diameter / 2, position)
+    pos = (250 + (col * (diameter + 1)), 267 + (row * (diameter + 1)) + (col * diameter / 2))
+    new_ball = create_ball(diameter / 2, pos)
     balls.append(new_ball)
   rows -= 1
+
   
 new_ball = create_ball(25, (300, 100))
 
@@ -93,6 +95,23 @@ def create_cushion(poly_dims):
 for c in cushions:
   create_cushion(c)
 
+#create pool cue
+class Cue():
+  def __init__(self, pos):
+    self.original_image = cue_image
+    self.angle = 0
+    self.image = pygame.transform.rotate(self.original_image, self.angle)
+    self.rect = self.image.get_rect()
+    self.rect.center = pos
+
+  def draw(self, surface):
+    self.image = pygame.transform.rotate(self.original_image, self.angle)
+    surface.blit(self.image,
+      (self.rect.centerx - self.image.get_width() / 2,
+      self.rect.centery - self.image.get_height() / 2)
+)
+
+cue = Cue(balls[-1].body.position)
 
 # create game loop
 run = True
@@ -110,6 +129,9 @@ while run:
   #draw pool balls
   for i, ball in enumerate(balls):
     screen.blit(ball_images[i], (ball.body.position[0] - ball.radius, ball.body.position[1] - ball.radius))
+
+  #draw pool cue
+  cue.draw(screen)
 
   # events handler
   for event in pygame.event.get():

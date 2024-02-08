@@ -37,6 +37,7 @@ pocket_diameter = 66
 force = 0
 max_force = 10000
 force_direction = 1
+game_running = True
 cue_ball_potted = False
 taking_shot = True
 powering_up = False
@@ -195,7 +196,7 @@ while run:
       taking_shot = False
 
   #draw pool cue
-  if taking_shot == True:
+  if taking_shot == True and game_running == True:
     if cue_ball_potted == True:
       #reposition the cue ball
       balls[-1].body.position = (888, SCREEN_HEIGHT / 2)
@@ -233,6 +234,11 @@ draw_text("LIVES: " + str(lives), font, WHITE, SCREEN_WIDTH - 200, SCREEN_HEIGHT
 # display potted balls in bottom panel
 for i, ball in enumerate(potted_balls):
   screen.blit(ball, (10 + (i * 50), SCREEN_HEIGHT + 10))
+
+# check for game over
+if lives <= 0:
+  draw_text("GAME OVER", large_font, WHITE, SCREEN_WIDTH / 2 - 160, SCREEN_HEIGHT / 2 - 100)
+  game_running = False
 
 # events handler
 for event in pygame.event.get():

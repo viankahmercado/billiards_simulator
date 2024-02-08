@@ -15,9 +15,10 @@ pygame.init()
 # screen height
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 678
+BOTTOM_PANEL = 50
 
 # game window
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT, BOTTOM_PANEL))
 pygame.display.set_caption("Billards Simulator")
 
 # pymunk space
@@ -171,8 +172,6 @@ while run:
           potted_balls.append(ball_images[i])
           ball_images.pop(i)
 
-print(potted_balls)
-
   #draw pool balls
   for i, ball in enumerate(balls):
     screen.blit(ball_images[i], (ball.body.position[0] - ball.radius, ball.body.position[1] - ball.radius))
@@ -185,12 +184,11 @@ print(potted_balls)
 
   #draw pool cue
   if taking_shot == True:
-
-  #calculate pool cue angle
+    #calculate pool cue angle
     mouse_pos = pygame.mouse.get_pos()
     cue.rect.center = balls[-1].body.position
     x_dist = balls[-1].body.position[0] - mouse_pos[0]
-    y_dist = -(balls[-1].body.position[1] - mouse_pos[1]) # -ve because pygame y coordinates increase down the screen
+    y_dist = -(balls[-1].body.position[1] - mouse_pos[1]) 
     cue_angle = math.degrees(math.atan2(y_dist, x_dist))
     cue.update(cue_angle)
     cue.draw(screen)
@@ -211,7 +209,11 @@ elif powering_up == False and taking_shot == True:
     balls[-1].body.apply_impulse_at_local_point((force * -x_impulse, force * y_impulse))
     force = 0
     force_direction = 1
-  
+
+# display potted balls in bottom panel
+for i, ball in enumerate(potted_balls):
+  screen.blit(ball, (10 + (i * 50), SCREEN_HEIGHT + 10))
+
 # events handler
 for event in pygame.event.get():
   if event.type == pygame.MOUSEBUTTONDOWN and taking_shot == True:

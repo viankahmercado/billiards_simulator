@@ -18,7 +18,7 @@ SCREEN_HEIGHT = 678
 BOTTOM_PANEL = 50
 
 # game window
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT, BOTTOM_PANEL))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT + BOTTOM_PANEL))
 pygame.display.set_caption("Billards Simulator")
 
 # pymunk space
@@ -172,7 +172,7 @@ while run:
       ball_x_dist = abs(ball.body.position[0] - pocket[0])
       ball_y_dist = abs(ball.body.position[1] - pocket[1])
       ball_dist = math.sqrt((ball_x_dist ** 2) + (ball_y_dist ** 2))
-      if ball_dist <= pocket_dia / 2:
+      if ball_dist <= pocket_diameter / 2:
         #check if the potted ball was the cue ball
         if i == len(balls) - 1:
           lives -= 1
@@ -211,7 +211,7 @@ while run:
     cue.draw(screen)
 
 # power up pool cue
-if powering_up == True:
+if powering_up == True and game_running == True:
     force += 100 * force_direction
     if force >= max_force or force <= 0:
       force_direction *= -1
@@ -238,6 +238,11 @@ for i, ball in enumerate(potted_balls):
 # check for game over
 if lives <= 0:
   draw_text("GAME OVER", large_font, WHITE, SCREEN_WIDTH / 2 - 160, SCREEN_HEIGHT / 2 - 100)
+  game_running = False
+
+# check if all balls are potted
+if len(balls) == 1:
+  draw_text("YOU WON!", large_font, WHITE, SCREEN_WIDTH / 2 - 160, SCREEN_HEIGHT / 2 - 100)
   game_running = False
 
 # events handler

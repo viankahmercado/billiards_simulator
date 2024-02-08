@@ -5,7 +5,7 @@ Final Project:
 # Push the code to your GitHub account, then put the youTube link to give credit.
 """
 
-import pygame
+import pygame, pymunk, pymunk.pygame_util
 
 pygame.init()
 
@@ -17,6 +17,21 @@ SCREEN_HEIGHT = 678
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Billards Simulator")
 
+# pymunk space
+space = pymunk.Space()
+draw_options = pymunk.pygame_util.DrawOptions(screen)
+
+# function for creating balls
+def create_ball(radius, pos):
+  body = pymunk.Body()
+  body.position = pos
+  shape = pymunk.Circle(body, radius)
+  shape.mass = 5
+
+  space.add(body, shape)
+  return shape 
+
+new_ball = create_ball(25, (300, 100))
 
 # create game loop
 run = True
@@ -27,5 +42,10 @@ while run:
     if event.type == pygame.QUIT:
       run = False
       
+space.debug_draw(draw_options)
+pygame.display.update()
+      
 pygame.quit()
+
+
 

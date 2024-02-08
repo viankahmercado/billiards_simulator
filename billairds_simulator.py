@@ -31,6 +31,9 @@ FPS = 120
 # colors
 background = (50, 50, 50)
 
+# images path
+table_image = pygame.image.load("images/table.png").convert_alpha()
+
 # function for creating balls
 def create_ball(radius, pos):
   body = pymunk.Body()
@@ -58,6 +61,10 @@ while run:
   
   # color fill background
   screen.fill(background)
+  
+  #draw pool table
+  screen.blit(table_image, (0, 0))
+
   
   # events handler
   for event in pygame.event.get():

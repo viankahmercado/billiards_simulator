@@ -31,6 +31,7 @@ clock = pygame.time.Clock()
 FPS = 120
 
 #game variables
+lives = 3
 diameter = 36
 pocket_diameter = 66
 force = 0
@@ -44,6 +45,11 @@ potted_balls = []
 # colors
 background = (50, 50, 50)
 RED = (255, 0, 0)
+WHITE = (255, 255, 255)
+
+#fonts
+font = pygame.font.SysFont("Lato", 30)
+large_font = pygame.font.SysFont("Lato", 60)
 
 # images path
 cue_image = pygame.image.load("images/cue.png").convert_alpha()
@@ -52,6 +58,11 @@ ball_images = []
 for i in range(1, 17):
   ball_image = pygame.image.load(f"images/ball_{i}.png").convert_alpha()
   ball_images.append(ball_image)
+
+# function for displaying text onto the screen
+def draw_text(text, font, text_col, x, y):
+  img = font.render(text, True, text_col)
+  screen.blit(img, (x, y))
 
 # function for creating balls
 def create_ball(radius, pos):

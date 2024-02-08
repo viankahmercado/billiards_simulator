@@ -31,12 +31,13 @@ FPS = 120
 
 #game variables
 diameter = 36
+pocket_diameter = 66
 force = 0
 max_force = 10000
 force_direction = 1
 taking_shot = True
 powering_up = False
-
+potted_balls = []
 
 # colors
 background = (50, 50, 50)
@@ -80,6 +81,16 @@ for col in range(5):
 new_ball = create_ball(25, (300, 100))
 
 cue_ball = create_ball(25, (300, 310))
+
+# coordinates of the six pockets on table
+pockets = [
+  (55, 63),
+  (592, 48),
+  (1134, 64),
+  (55, 616),
+  (592, 629),
+  (1134, 616)
+]
 
 # corner coordinates of each cushions
 cushions = [
@@ -140,6 +151,27 @@ while run:
   
   #draw pool table
   screen.blit(table_image, (0, 0))
+
+#check if any balls have been potted
+  for i, ball in enumerate(balls):
+    for pocket in pockets:
+      ball_x_dist = abs(ball.body.position[0] - pocket[0])
+      ball_y_dist = abs(ball.body.position[1] - pocket[1])
+      ball_dist = math.sqrt((ball_x_dist ** 2) + (ball_y_dist ** 2))
+      if ball_dist <= pocket_dia / 2:
+        #check if the potted ball was the cue ball
+        if i == len(balls) - 1:
+          lives -= 1
+          cue_ball_potted = True
+          ball.body.position = (-100, -100)
+          ball.body.velocity = (0.0, 0.0)
+        else:
+          space.remove(ball.body)
+          balls.remove(ball)
+          potted_balls.append(ball_images[i])
+          ball_images.pop(i)
+
+print(potted_balls)
 
   #draw pool balls
   for i, ball in enumerate(balls):

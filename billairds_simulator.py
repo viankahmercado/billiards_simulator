@@ -36,6 +36,7 @@ pocket_diameter = 66
 force = 0
 max_force = 10000
 force_direction = 1
+cue_ball_potted = False
 taking_shot = True
 powering_up = False
 potted_balls = []
@@ -184,6 +185,10 @@ while run:
 
   #draw pool cue
   if taking_shot == True:
+    if cue_ball_potted == True:
+      #reposition the cue ball
+      balls[-1].body.position = (888, SCREEN_HEIGHT / 2)
+      cue_ball_potted = False
     #calculate pool cue angle
     mouse_pos = pygame.mouse.get_pos()
     cue.rect.center = balls[-1].body.position
@@ -209,6 +214,10 @@ elif powering_up == False and taking_shot == True:
     balls[-1].body.apply_impulse_at_local_point((force * -x_impulse, force * y_impulse))
     force = 0
     force_direction = 1
+
+# draw bottom panel
+pygame.draw.rect(screen, background, (0, SCREEN_HEIGHT, SCREEN_WIDTH, BOTTOM_PANEL))
+draw_text("LIVES: " + str(lives), font, WHITE, SCREEN_WIDTH - 200, SCREEN_HEIGHT + 10)
 
 # display potted balls in bottom panel
 for i, ball in enumerate(potted_balls):

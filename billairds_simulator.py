@@ -8,6 +8,7 @@ Final Project:
 import pygame
 import pymunk
 import pymunk.pygame_util
+import math
 
 pygame.init()
 
@@ -30,6 +31,7 @@ FPS = 120
 
 #game variables
 diameter = 36
+taking_shot = True
 
 # colors
 background = (50, 50, 50)
@@ -104,6 +106,9 @@ class Cue():
     self.rect = self.image.get_rect()
     self.rect.center = pos
 
+  def update(self, angle):
+    self.angle = angle
+
   def draw(self, surface):
     self.image = pygame.transform.rotate(self.original_image, self.angle)
     surface.blit(self.image,
@@ -130,8 +135,26 @@ while run:
   for i, ball in enumerate(balls):
     screen.blit(ball_images[i], (ball.body.position[0] - ball.radius, ball.body.position[1] - ball.radius))
 
+  #check if all the balls have stopped moving
+  taking_shot = True
+  for ball in balls:
+    if int(ball.body.velocity[0]) != 0 or int(ball.body.velocity[1]) != 0:
+      taking_shot = False
+
   #draw pool cue
-  cue.draw(screen)
+  if taking_shot == True and game_running == True:
+    if cue_ball_potted == True:
+      #reposition cue ball
+      balls[-1].body.position = (888, SCREEN_HEIGHT / 2)
+      cue_ball_potted = False
+  #calculate pool cue angle
+    mouse_pos = pygame.mouse.get_pos()
+    cue.rect.center = balls[-1].body.position
+    x_dist = balls[-1].body.position[0] - mouse_pos[0]
+    y_dist = -(balls[-1].body.position[1] - mouse_pos[1]) # -ve because pygame y coordinates increase down the screen
+    cue_angle = math.degrees(math.atan2(y_dist, x_dist))
+    cue.update(cue_angle)
+    cue.draw(screen)
 
   # events handler
   for event in pygame.event.get():

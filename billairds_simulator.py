@@ -31,7 +31,12 @@ FPS = 120
 
 #game variables
 diameter = 36
+force = 0
+max_force = 10000
+force_direction = 1
 taking_shot = True
+powering_up = False
+
 
 # colors
 background = (50, 50, 50)
@@ -142,11 +147,8 @@ while run:
       taking_shot = False
 
   #draw pool cue
-  if taking_shot == True and game_running == True:
-    if cue_ball_potted == True:
-      #reposition cue ball
-      balls[-1].body.position = (888, SCREEN_HEIGHT / 2)
-      cue_ball_potted = False
+  if taking_shot == True:
+
   #calculate pool cue angle
     mouse_pos = pygame.mouse.get_pos()
     cue.rect.center = balls[-1].body.position
@@ -156,11 +158,26 @@ while run:
     cue.update(cue_angle)
     cue.draw(screen)
 
-  # events handler
-  for event in pygame.event.get():
-    if event.type == pygame.MOUSEBUTTONDOWN:
-      cue_ball.body.apply_impulse_at_local_point((-1500, 0),(0,0))
-    if event.type == pygame.QUIT:
+# power up pool cue
+if powering_up == True:
+    force += 100 * force_direction
+    if force >= max_force or force <= 0:
+      force_direction *= -1
+    print(force)
+elif powering_up == False and taking_shot == True:
+    x_impulse = math.cos(math.radians(cue_angle))
+    y_impulse = math.sin(math.radians(cue_angle))
+    balls[-1].body.apply_impulse_at_local_point((force * -x_impulse, force * y_impulse))
+    force = 0
+    force_direction = 1
+  
+# events handler
+for event in pygame.event.get():
+  if event.type == pygame.MOUSEBUTTONDOWN and taking_shot == True:
+      powering_up = True
+  if event.type == pygame.MOUSEBUTTONUP and taking_shot == True:
+      powering_up = False
+  if event.type == pygame.QUIT:
       run = False
       
 space.debug_draw(draw_options)
